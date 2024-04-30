@@ -1,0 +1,599 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="discription" content="テキストから文字の数を数えられるサイトになります" />
+  <title>文字中検索(^▽^)o</title>
+<!--
+
+きたか…！！
+
+　　( ﾟдﾟ )　ｶﾞﾀｯ
+　　.r　　 ヾ
+＿_|_|　/￣￣￣/＿
+　　＼/　　　　 /
+　　　　￣￣￣
+
+-->
+  <style>
+  :root{
+    --black-color: #000;
+    --red-color: tomato;
+    --blue-color: blue;
+    --green-color: green;
+    --gray-color: gray;
+    --dark-gray-color: #686868;
+    --white-color: #fff;
+
+    --sp-body-width: 480px;
+    --sp-content-width: 420px;
+
+    --padding: 12px;
+    --margin: 18px;
+    --sp-font-size:18px;
+
+    --slide-covering-right: 320px;
+    --slide-covering-bottom:4px;
+  }
+
+  *{
+    margin: 0;
+    padding: 0;
+    margin-block-start:0;
+    margin-block-end:0;
+    margin-inline-start:0;
+    margin-inline-end:0;
+    font-size: var(--sp-font-size);
+    font-weight: normal;
+    border-collapse: collapse;
+
+  }
+
+  input[type="text"],textarea {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -webkit-appearance: none;
+    padding: 1px 10px 1px 10px;
+    max-width: 100%;
+    -webkit-border-radius:4px;
+  }
+
+  input[type="text"]:hover,textarea:hover{
+    border: 1px solid var(--dark-gray-color);
+  }
+
+  input[type="text"]{
+    border: 1px solid var(--gray-color);
+  }
+
+  li{
+    list-style: none;
+  }
+
+  img{
+    vertical-align: bottom;
+  }
+
+  a:link {
+    text-decoration: none;
+  }
+
+  a:visited {
+    color:auto;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+/* 共通 */
+  .clearFix{
+  }
+
+  .clearFix:after{
+    display: block;
+    content: "";
+    clear: both;
+  }
+
+  .of_hidden{
+    overflow: hidden;
+  }
+
+
+  /*ボタンモデル*/
+  .button{
+    display: inline-block;
+    width: 120px;
+    padding: var(--padding) var(--padding);
+    text-align: center;
+    border: var(--gray-color);
+    box-shadow: 0 1px 0 0 var(--black-color);
+    cursor: pointer;
+  }
+
+  .button_blue{
+    background: linear-gradient(var(--blue-color),navy);
+    color:var(--white-color);
+  }
+
+  .button_red{
+      background: linear-gradient(var(--red-color),crimson);
+      color:var(--white-color);
+  }
+
+  /*共通ボーダー*/
+  .border{
+    border: 1px solid var(--gray-color);
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  /*SPのコンテンツサイズ最大*/
+  .sp_content_width{
+    width: var(--sp-content-width);
+  }
+/*個別設定*/
+  body{
+    padding: 12px;
+    width: 480px;
+    margin: 0 auto;
+  }
+  .stage{
+    width: 480px;
+    margin: 0 auto;
+  }
+  header{
+    width: 480px;
+    border-top: 6px solid var(--blue-color);
+  }
+  header h1{
+    font-size: 24px;
+  }
+  .dispBlock{
+      display: block;
+  }
+  .contentWrap{
+    padding-top: var(--padding);
+    width: 480px;
+  }
+  .contentInner{
+    width: 420px;
+    margin: var(--margin) auto auto;
+    position: relative;
+  }
+
+  #swich{
+    position: relative;
+    right:calc((var(--sp-body-width) - var(--sp-content-width)) / 2);
+  }
+  .view_wrap{
+    width: 0;
+    height: 0;
+    display: block;
+    position: relative;
+  }
+
+  .slide_wrap{
+    width: var(--sp_content_width);
+    height: 442px;
+    margin-bottom: var(--margin);
+    position: relative;
+  }
+
+
+  h2 textarea{
+/*    margin-top:var(--margin);*/
+    min-width: 420px;
+    max-width: 420px;
+    height: 420px;
+  }
+
+  .slide_window{
+    margin-top: var(--margin);
+/*    margin-left: var(--margin);*/
+    height: 422px;
+    /*text-align: center;*/
+    position: absolute;;
+    width: var(--sp-content-width);
+    text-align: center;
+    transition: z-index 1s;
+    background-color: var(--white-color);
+
+  }
+
+  .slide_window > img{
+    height: 422px;
+    vertical-align: bottom;
+  }
+
+  .slide_shadow{
+    -webkit-filter: drop-shadow(0 1px 1px rgba(0,0,0,1));
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,1));
+  }
+
+  #anm{
+    animation: rotate 1.0s ease;
+  }
+  @keyframes rotate {
+   0% {
+     margin-left: 0px;
+   }
+
+   50% {
+     margin-left: -450px;
+   }
+
+   100%{
+      margin-left: 0;
+  /*    transition: margin-left 0.5s,z-index 0.5s;*/
+   }
+
+  }
+
+  .actionButton{
+    margin-top: var(--margin);
+  }
+
+  .resultWrap{
+    margin-top: var(--margin);
+  }
+  .resultList{
+    float: left;
+    height: 36px;
+    line-height: 36px;
+    width: 50%;
+  }
+  .resultInner > div > ul {
+    width: var(--sp_content_width);
+  }
+  .resultList input[type="text"]{
+    height: 34px;
+  }
+  .resultNum{
+    width: 72px;
+    display: inline-block;
+    text-align: right;
+    font-weight: bold;
+  }
+  .middleWrap{
+    width: var(--sp_content_width);
+    margin-top: var(--margin);
+  }
+
+  .middleInner > p{
+    margin-top: calc(var(--margin) * 1.5);
+  }
+
+  .detectedWord{
+    color: var(--red-color);
+    font-size: 24px;
+  }
+  .detectedNum{
+    color: var(--blue-color);
+    font-size: 24px;
+  }
+  .detectedTime{
+    font-style: oblique;
+  }
+  .bottomWrap{
+    margin-top: var(--margin);
+  }
+  .bottomInner ul,.bottomInner li{
+    margin-top: var(--margin);
+  }
+
+  .downloadLink{
+    margin-top: var(--margin);
+  }
+
+  .button_dl{
+    padding: var(--padding);
+  }
+
+  .adWrap{
+    position: fixed;
+    bottom: 0;
+    width: 480px;
+  }
+  .adWrap ul{
+    width: 480px;
+    background: rgba(0,0,0, 0.5);
+  }
+  .adWrap ul li{
+    width: 320px;
+    min-width: 320px;
+    height: 100px;
+    min-height: 100px;
+    margin: 0 auto;
+  }
+  footer{
+    margin-top: var(--margin);
+  }
+  </style>
+
+<script type="text/javascript">
+window.addEventListener("DOMContentLoaded",function(){
+
+  //文字列からワードの数をカウントする関数
+  function searchAndCount(){
+
+    var detect_lists = getLists();
+    var pool = getText();
+    var set_field = document.getElementsByClassName("resultNum");
+
+    for (var i = 0; i < detect_lists.length; i++) {
+      set_field[i].innerHTML = getDetectNum(detect_lists[i].value,pool);
+      setHistry(htmlEscape(detect_lists[i].value),set_field[i].innerHTML);
+    }
+
+  }
+
+  function htmlEscape(string){
+    return string.replace(/[<>//]/g,'');
+  }
+
+  //return 検索結果 Int
+  function getDetectNum(detect_word,pool){
+
+    detect_word = detect_word.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
+    var regexp = new RegExp(detect_word,'g');
+    var return_num = 0;
+    result = pool.match(regexp);
+    if(result && result[0] !== ""){
+       return_num =  pool.match(regexp).length;
+    }
+    return return_num;
+
+  }
+
+  //履歴を追加する
+  function setHistry(detect_word,detectedNum){
+        var addArea = document.getElementsByClassName('historyList')[0];
+        var last_history = addArea.querySelector('.history');
+        var history = createHistory(detect_word,detectedNum);
+        if(last_history){
+            addArea.insertBefore(history,last_history);
+        }else{
+          addArea.appendChild(history);
+        }
+  }
+
+  //検索履歴のHTML作成
+  function createHistory(detect_word,detectedNum){
+
+        var new_li = document.createElement('li');
+        var new_detected_word = document.createElement('span');
+        var new_detected_num = document.createElement('span');
+        var new_detected_time = document.createElement('span');
+
+
+        new_li.classList.add("history");
+        new_detected_word.classList.add('detectedWord');
+        new_detected_num.classList.add('detectedNum');
+        new_detected_time.classList.add('detectedTime');
+
+        new_detected_word.innerHTML = detect_word;
+        new_detected_num.innerHTML = detectedNum;
+        new_detected_time.innerHTML = new Date().toLocaleString();
+
+        new_li.appendChild(new_detected_word);
+        new_li.innerHTML += ' was ';
+        new_li.appendChild(new_detected_num);
+        new_li.innerHTML += ' detected ';
+        new_li.appendChild(new_detected_time);
+
+        return new_li;
+
+  }
+
+  //return Array
+  function getLists(){
+    return document.getElementsByClassName("searchWord");
+  }
+
+  //テキストエリア取得 return String
+  function getText(){
+    return document.getElementsByClassName("pool")[0].value;
+  }
+
+  //ボタンにイベントハンドラをつける
+  function _E_history(){
+      var button = document.querySelector(".actionButton");
+      button.addEventListener("click",function(){
+        searchAndCount();
+      },false);
+  }
+
+  function makeDLString(){
+
+    var dlstr = "";
+    var lists = document.getElementsByClassName("history");
+    for (var i = 0; i < lists.length; i++) {
+          var spans = lists[i].getElementsByTagName("span");
+          for (var j = 0; j < spans.length; j++) {
+              if( j === spans.length - 1 ){
+                dlstr += spans[j].innerHTML.replace(/,/g,'');
+              }
+              else{
+                dlstr += spans[j].innerHTML.replace(/,/g,'') + ',';
+            }
+          }
+          dlstr += "\n";
+    }
+    return dlstr;
+
+  }
+
+  function _E_dldata(){
+
+      var dlbutton = document.getElementsByClassName("button_dl")[0];
+      dlbutton.addEventListener("click",function(){
+
+        var result_string = makeDLString();
+        var dldata = new Blob([result_string],{type: 'text/csv'});
+
+        //dlbuttonのリンク先に設定
+        dlbutton.href = window.URL.createObjectURL(dldata);
+      },false);
+
+  }
+
+// スライドの呼び出し関数
+  function _E_slide(){
+
+    var cards = document.getElementsByClassName('slide_window');
+
+    setIndex(cards);
+    addSlidePosition(cards);
+
+    document.getElementById("swich").addEventListener('click',setIndex(cards),false);
+  }
+
+
+  function addSlidePosition(cards) {
+
+    var distance = 0;
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].style.left = distance + "px";
+      cards[i].style.top = distance + "px";
+
+      distance += 6;
+    }
+  }
+
+/*
+Z indexの設定を行う
+*/
+  function setIndex(cards){
+    var index = cards.length;
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].style.zIndex = index;
+      index --;
+    }
+    click_flg = false;
+    return function(){
+      if(click_flg === false){
+        clearAnim(cards);
+        var index = cards.length;
+        for (var i = 0; i < cards.length; i++) {
+          index = cards[i].style.zIndex - 1;
+          if ( index < 1) {
+            index = cards.length;
+            cards[i].id = 'anm';
+          }
+          cards[i].style.zIndex = index;
+        }
+        click_flg = true;
+        setTimeout(clickTimer,1000);
+      }
+     }
+  }
+
+  function clearAnim(cards){
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].removeAttribute("id");
+    }
+  }
+
+  function clickTimer(){
+    click_flg = false;
+  }
+
+  //イベントメイン
+  function eventMaster(){
+
+    _E_history();
+    _E_dldata();
+    _E_slide();
+
+  }
+
+  //ハンドル呼び出し
+  eventMaster();
+
+}
+,false);
+
+</script>
+</head>
+<body>
+  <div class="stage">
+  <header class="">
+    <div class="">
+      <h1>文字中検索</h1>
+    </div>
+  </header>
+  <div class="contentWrap">
+    <span class="dispBlock">下の文字から文字を検索するのら</span>
+     <div class="contentInner">
+       <div id="swich" class="button button_red border">もう変える<!-- 斗星の北天に在るにさも似たり --></div>
+<!--       <svg class="view_wrap"> -->
+       <div class="slide_wrap">
+         <h2 class="slide_window slide_shadow border">
+             <textarea rows="20" class="pool border" placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."></textarea>
+       </h2>
+       <a href="https://ja.wikipedia.org/wiki/%E5%AE%89%E6%9D%B1%E6%84%9B%E5%AD%A3" target="_blank">
+         <figure class="slide_window slide_shadow border">
+           <img src="./img/ando.jpg" alt="安藤愛季の画像">
+         </figure>
+       </a>
+       <a href="https://ja.wikipedia.org/wiki/%E5%A4%A7%E5%8F%8B%E7%BE%A9%E9%8E%AE" target="_blank">
+         <figure class="slide_window slide_shadow border">
+           <img src="./img/sourin.jpg" alt="大友宗麟の画像">
+         </figure>
+       </a>
+       <a href="https://ja.wikipedia.org/wiki/%E5%AE%87%E5%96%9C%E5%A4%9A%E7%A7%80%E5%AE%B6" target="_blank">
+         <figure class="slide_window slide_shadow border">
+         <img src="./img/hideie.jpg" alt="宇喜多秀家の画像">
+         </figure>
+       </a>
+     </div> <!-- slide_wrap -->
+<!--   </svg>  end view_wrap -->
+             <div class="button border sp_content_width actionButton button_blue">数える</div>
+             <div class="resultWrap">
+                <div class="resultInner">
+                  <div class="clearFix">
+                      <ul class="of_hidden">
+                        <li class="resultList"><input type="text" name="" value="" placeholder="検索したい文字を入力" class="searchWord"></li>
+                        <li class="resultList"><span class="resultNum">0</span>見つかりました</li>
+                      </ul>
+                  </div>
+                </div><!-- resultInner -->
+            </div><!-- resultWrap-->
+     </div>
+   </div>
+   <div class="middleWrap">
+     <div class="middleInner">
+       <div class="downloadLink">
+         <a class="button button_blue border button_dl" download="report.csv">CSV出力</a>
+       </div>
+       <p>検索履歴</p>
+       <ul class="historyList">
+      </ul>
+     </div><!-- middleInner -->
+   </div><!-- middleWrap -->
+   <div class="bottomWrap">
+     <div class="bottomInner">
+       <p>更新履歴</p>
+       <ul>
+         <li>2019/04/01 公開しました</li>
+       </ul>
+     </div><!-- bottomInner -->
+   </div><!-- bottomWrap -->
+   <div class="adWrap">
+     <ul class="clearFix">
+       <li><div class="ad"><img src="./img/320x100_sp.png" alt="ad"></div></li>
+     </ul>
+   </div><!-- adWrap -->
+
+<footer>
+  <small>&copy;simons</small>
+</footer>
+
+<script type="text/javacript"></script>
+</div> <!-- stage ->
+</body>
+</html>
